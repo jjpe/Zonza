@@ -6,8 +6,8 @@ NU_DIR=./nushell
 NU_ARCHIVE="nu-${NU_VERSION}-x86_64-unknown-linux-musl.tar.gz"
 BASE_URL="https://github.com/nushell/nushell/releases/download"
 
-## Fetch a temporary nushell
-if [[ ! -f $NU_ARCHIVE ]] ; then
+## Fetch a temporary bootstrap Nushell
+if [[ ! -f $NU_DIR/$NU_ARCHIVE ]] ; then
     echo "Downloading bootstrap Nushell"
     mkdir -p $NU_DIR
     cd $NU_DIR
@@ -18,14 +18,14 @@ else
     echo "Bootstrap Nushell already downloaded"
 fi
 
-## Fetch tools using the Nushell script and store them in  ~/.cargo/bin
+## Fetch the tools and store them in  ~/.cargo/bin
 nushell/nu ./fetch-tools.nu
 
-
-
-## Configuration of the ZO.N.Z.A. stack
+## Configure the ZO.N.Z.A. stack
 
 # TODO
+
+
 
 ## Cleanup
 
