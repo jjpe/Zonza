@@ -67,18 +67,18 @@ def cargo-install [
     --all-features: bool,
 ] {
     let flags = [
-		{value: $locked,       repr: "--locked"}
-		{value: $force,        repr: "--force"}
-		{value: $all-features, repr: "--all-features"}
-	]
-	let args = (stringify-flags $flags | where not ($it | empty?))
+        {value: $locked,       repr: "--locked"}
+        {value: $force,        repr: "--force"}
+        {value: $all-features, repr: "--all-features"}
+    ]
+    let args = (stringify-flags $flags | where not ($it | empty?))
     let entry = ($cmd | append $args | str collect ' ' | str trim)
     log $"Installing ($entry)"
     cargo install $cmd $args
 }
 
 def stringify-flags [flags] {
-	$flags | each {|f| if ($f.value) { $f.repr } else { "" }}
+    $flags | each {|f| if ($f.value) { $f.repr } else { "" }}
 }
 
 def log [...msgs: string] {
