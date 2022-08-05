@@ -50,6 +50,13 @@ cargo-install wasm-pack # essential Rust WASM tooling
 # Install non-Rust bins:
 install-lazygit
 
+# Configure
+log "Configuring the ZO.N.Z.A. stack..."
+add-env-entry "let-env PATH = ($env.PATH | uniq)"
+configure-zoxide
+configure-fzf
+
+# Configure Nushell plugins
 cargo-install nu_plugin_gstat # git stat plugin for nushell
 register -e json ~/.cargo/bin/nu_plugin_gstat
 
@@ -102,6 +109,36 @@ def install-lazygit [] {
     tar -xf $"/tmp/($lazygit-file)" -C $tmp-lazygit-dir
     mkdir $bin-dir
     cp /tmp/lazygit/lazygit $bin-dir
+}
+
+def configure-zoxide [] {
+    add-env-entry (
+        "zoxide init nushell --hook prompt | save ~/.zoxide.nu"
+    )
+    add-config-entry "source ~/.zoxide.nu"
+}
+
+def configure-fzf [] {
+    # TODO: ask user where FZF is installed
+    let fzf-path = "~/dev/fzf/bin"
+    add-config-entry ($"let-env PATH = \(prepend-to-path ($fzf-path))")
+    add-config-entry ("
+def prepend-to-path [p: path] {
+    if (p in env.PATH) {
+        env.PATH | uniq
+    } else {
+        env.PATH | prepend p | uniq
+    }
+}" | str trim)
+}
+
+def add-env-entry [...msg: string] {
+    $msg | prepend '' | save --append ($nu.env-path)
+
+}
+
+def add-config-entry [...msg: string] {
+    $msg | prepend '' | save --append ($nu.config-path)
 }
 
 def stringify-flags [flags] {
