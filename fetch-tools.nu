@@ -8,6 +8,7 @@ if (is-rust-installed?) {
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 }
 
+
 # The idea behind these tools is to provide a contemporary
 # UX while also improving on functionality.
 # To that end, the sandwhich to be made is:
@@ -20,9 +21,12 @@ cargo-install nu --all-features # a modern, FP-style shell
 cargo-install zellij            # tab/pane support
 cargo-install zoxide --locked   # CLI navigation on steroids
 
+
 # Install more general tools
 cargo-install bat # modern update to `cat`
 cargo-install bottom --locked # modern update to `top` and `htop`
+cargo-install bacon --locked # A background Rust code checker
+cargo-install cargo-asm --locked # Displays the ASM/llvm-ir for Rust src.
 cargo-install cargo-audit # vuln auditing tool
 cargo-install cargo-cache # manage Rust crate cache
 cargo-install cargo-make # build tool for complex projects
@@ -32,9 +36,11 @@ cargo-install du-dust # summarize dir disk space usage
 cargo-install dua # alternative for du-dust
 cargo-install exa # modern update to `ls`
 # cargo-install eva  # calculator REPL
+cargo-install evcxr_repl --locked # A Rust REPL
 cargo-install fd-find --locked # modern update to `find`
 cargo-install grex --locked # Generate regexes from samples
 cargo-install hyperfine # CLI benchmarking tool
+cargo-install irust --locked # A Rust REPL
 cargo-install ripgrep # modern update to `grep`
 cargo-install rusty-man # CLI viewer for rustdoc docs
 cargo-install tokei # SLOC stats
