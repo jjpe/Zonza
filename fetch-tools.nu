@@ -47,9 +47,12 @@ cargo-install tokei # SLOC stats
 cargo-install wasm-bindgen-cli # essential Rust WASM tooling
 cargo-install wasm-pack # essential Rust WASM tooling
 
-# Nushell plugins
+# Install non-Rust bins:
+install-lazygit
+
 cargo-install nu_plugin_gstat # git stat plugin for nushell
 register -e json ~/.cargo/bin/nu_plugin_gstat
+
 
 # Check that the Rust toolchain is installed
 def is-rust-installed? [] {
@@ -81,6 +84,24 @@ def cargo-install [
     let entry = ($cmd | append $args | str collect ' ' | str trim)
     log $"Installing ($entry)"
     cargo install $cmd $args
+}
+
+def install-lazygit [] {
+    let lazygit-version = "0.35"
+    let lazygit-file = $"lazygit_($lazygit-version)_Linux_x86_64.tar.gz"
+    let lazygit-base-url = (
+        "https://github.com/jesseduffield/lazygit/releases/download"
+    )
+    let tmp-lazygit-dir = "/tmp/lazygit"
+    let bin-dir = "~/bin"
+
+    log "Installing lazygit"
+    fetch --raw $"($lazygit-base-url)/v($lazygit-version)/($lazygit-file)"
+    | save --raw $"/tmp/($lazygit-file)"
+    mkdir $tmp-lazygit-dir
+    tar -xf $"/tmp/($lazygit-file)" -C $tmp-lazygit-dir
+    mkdir $bin-dir
+    cp /tmp/lazygit/lazygit $bin-dir
 }
 
 def stringify-flags [flags] {
