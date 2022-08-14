@@ -33,7 +33,7 @@ def main [] {
     touch $marker-path
 }
 
-def touch [file: path] {
+def touch [path: path] {
     "" | save --raw ($path)
 }
 
