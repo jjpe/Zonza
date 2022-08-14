@@ -12,7 +12,7 @@ def main [] {
     install-os-libraries
     install-bins
 
-    let marker-path = "~/.zonza"
+    let marker-path = ("~/.zonza")
     if ($marker-path | path exists) {
         # TODO: update
 
