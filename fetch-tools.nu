@@ -168,10 +168,10 @@ def configure-fzf [] {
     add-config-entry ($"let-env PATH = \(prepend-to-path ($fzf-path))")
     add-config-entry ("
 def prepend-to-path [p: path] {
-    if (p in env.PATH) {
-        env.PATH | uniq
+    if ($p in $env.PATH) {
+        $env.PATH | uniq
     } else {
-        env.PATH | prepend p | uniq
+        $env.PATH | prepend $p | uniq
     }
 }" | str trim)
 }
