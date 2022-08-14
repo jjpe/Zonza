@@ -1,41 +1,36 @@
 #!/usr/bin/env nu
 
-def main [] {
-    # Install Rust if not present
-    if (is-rust-installed?) {
-        log "Rust is already installed"
-    } else {
-        log "Installing Rust"
-        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-    }
-
-    install-os-libraries
-    install-bins
-
-    let marker-path = ("~/.zonza")
-    if ($marker-path | path exists) {
-        # TODO: update
-
-    } else {
-        # TODO: fresh install
-
-        # Configure stack components
-        log "Configuring the ZO.N.Z.A. stack..."
-        add-env-entry "let-env PATH = ($env.PATH | uniq)"
-
-        configure-zoxide
-        configure-fzf
-        configure-zellij
-        configure-alacritty
-        configure-nushell
-    }
-
-    touch $marker-path
+# def main [] {
+# Install Rust if not present
+if (is-rust-installed?) {
+    log "Rust is already installed"
+} else {
+    log "Installing Rust"
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 }
 
-def touch [path: path] {
-    "" | save --raw ($path)
+install-os-libraries
+install-bins
+
+let marker-path = "~/.zonza"
+if ($marker-path | path exists) {
+    # TODO: update
+ } else {
+    # TODO: fresh install
+
+    # Configure stack components
+    log "Configuring the ZO.N.Z.A. stack..."
+    add-env-entry "let-env PATH = ($env.PATH | uniq)"
+
+    configure-zoxide
+    configure-fzf
+    configure-zellij
+    configure-alacritty
+    configure-nushell
 }
+
+touch $marker-path
+# }
 
 
 def install-bins [] {
