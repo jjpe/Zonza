@@ -8,6 +8,7 @@ if (is-rust-installed?) {
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 }
 
+install-os-libraries
 
 # The idea behind these tools is to provide a contemporary
 # UX while also improving on functionality.
@@ -70,6 +71,21 @@ def is-rust-installed? [] {
         | str trim
         | str collect
         | path exists
+    }
+}
+
+def install-os-libraries [] {
+    if (uname -a | str contains "Ubuntu") {
+        log "Installing some prerequisite Ubuntu-hosted libraries"
+        sudo apt install [
+            libsqlite3-dev
+            libpq-dev
+            default-libmysqlclient-dev
+            fonts-powerline
+        ]
+    } else {
+        log "Unsupported OS"
+        exit 1;
     }
 }
 
