@@ -30,8 +30,13 @@ def main [] {
         configure-nushell
     }
 
-    touch ($marker-path)
+    touch $marker-path
 }
+
+def touch [file: path] {
+    "" | save --raw ($path)
+}
+
 
 def install-bins [] {
     # The idea behind these tools is to provide a contemporary
