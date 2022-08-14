@@ -78,10 +78,10 @@ def install-os-libraries [] {
     if (uname -a | str contains "Ubuntu") {
         log "Installing some prerequisite Ubuntu-hosted libraries"
         sudo apt install [
-            libsqlite3-dev
-            libpq-dev
-            default-libmysqlclient-dev
-            fonts-powerline
+            libsqlite3-dev              # for diesel_cli
+            libpq-dev                   # for diesel_cli
+            default-libmysqlclient-dev  # for diesel_cli
+            fonts-powerline             # for alacritty
         ]
     } else {
         log "Unsupported OS"
