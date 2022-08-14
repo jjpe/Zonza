@@ -1,63 +1,78 @@
 #!/usr/bin/env nu
 
-# Install Rust if not present
-if (is-rust-installed?) {
-    log "Rust is already installed"
-} else {
-    log "Installing Rust"
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+def main [] {
+    # Install Rust if not present
+    if (is-rust-installed?) {
+        log "Rust is already installed"
+    } else {
+        log "Installing Rust"
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    }
+
+    install-os-libraries
+    install-bins
+
+    let marker-path = "~/.zonza"
+    if ($marker-path | path exists) {
+        # TODO: update
+
+    } else {
+        # TODO: fresh install
+
+        # Configure stack components
+        log "Configuring the ZO.N.Z.A. stack..."
+        add-env-entry "let-env PATH = ($env.PATH | uniq)"
+
+        configure-zoxide
+        configure-fzf
+        configure-zellij
+        configure-alacritty
+        configure-nushell
+    }
+
+    touch $marker-path
 }
 
-install-os-libraries
+def install-bins [] {
+    # The idea behind these tools is to provide a contemporary
+    # UX while also improving on functionality.
+    # To that end, the sandwhich to be made is:
+    # - nushell on top
+    # - zellij in the middle
+    # - alacritty at the bottom
+    # - zoxide for superior path navigation
+    cargo-install alacritty         # fast H/W accelerated terminal
+    cargo-install nu --all-features # a modern, FP-style shell
+    cargo-install zellij            # tab/pane support
+    cargo-install zoxide --locked   # CLI navigation on steroids
 
-# The idea behind these tools is to provide a contemporary
-# UX while also improving on functionality.
-# To that end, the sandwhich to be made is:
-# - nushell on top
-# - zellij in the middle
-# - alacritty at the bottom
-# - zoxide for superior path navigation
-cargo-install alacritty         # fast H/W accelerated terminal
-cargo-install nu --all-features # a modern, FP-style shell
-cargo-install zellij            # tab/pane support
-cargo-install zoxide --locked   # CLI navigation on steroids
+    # Install some portable tools:
+    cargo-install bat # modern update to `cat`
+    cargo-install bottom --locked # modern update to `top` and `htop`
+    cargo-install bacon --locked # A background Rust code checker
+    cargo-install cargo-asm --locked # Displays the ASM/llvm-ir for Rust src.
+    cargo-install cargo-audit # vuln auditing tool
+    cargo-install cargo-cache # manage Rust crate cache
+    cargo-install cargo-make # build tool for complex projects
+    cargo-install cargo-outdated # scans a project for outdated deps
+    cargo-install diesel_cli --locked # Diesel CLI util
+    cargo-install du-dust # summarize dir disk space usage
+    cargo-install dua # alternative for du-dust
+    cargo-install exa # modern update to `ls`
+    # cargo-install eva  # calculator REPL
+    cargo-install evcxr_repl --locked # A Rust REPL
+    cargo-install fd-find --locked # modern update to `find`
+    cargo-install grex --locked # Generate regexes from samples
+    cargo-install hyperfine # CLI benchmarking tool
+    cargo-install irust --locked # A Rust REPL
+    cargo-install ripgrep # modern update to `grep`
+    cargo-install rusty-man # CLI viewer for rustdoc docs
+    cargo-install tokei # SLOC stats
+    cargo-install wasm-bindgen-cli # essential Rust WASM tooling
+    cargo-install wasm-pack # essential Rust WASM tooling
+    install-lazygit # TUI for git
+}
 
-
-# Install some portable tools:
-cargo-install bat # modern update to `cat`
-cargo-install bottom --locked # modern update to `top` and `htop`
-cargo-install bacon --locked # A background Rust code checker
-cargo-install cargo-asm --locked # Displays the ASM/llvm-ir for Rust src.
-cargo-install cargo-audit # vuln auditing tool
-cargo-install cargo-cache # manage Rust crate cache
-cargo-install cargo-make # build tool for complex projects
-cargo-install cargo-outdated # scans a project for outdated deps
-cargo-install diesel_cli --locked # Diesel CLI util
-cargo-install du-dust # summarize dir disk space usage
-cargo-install dua # alternative for du-dust
-cargo-install exa # modern update to `ls`
-# cargo-install eva  # calculator REPL
-cargo-install evcxr_repl --locked # A Rust REPL
-cargo-install fd-find --locked # modern update to `find`
-cargo-install grex --locked # Generate regexes from samples
-cargo-install hyperfine # CLI benchmarking tool
-cargo-install irust --locked # A Rust REPL
-cargo-install ripgrep # modern update to `grep`
-cargo-install rusty-man # CLI viewer for rustdoc docs
-cargo-install tokei # SLOC stats
-cargo-install wasm-bindgen-cli # essential Rust WASM tooling
-cargo-install wasm-pack # essential Rust WASM tooling
-install-lazygit # TUI for git
-
-# Configure stack components
-log "Configuring the ZO.N.Z.A. stack..."
-add-env-entry "let-env PATH = ($env.PATH | uniq)"
-
-configure-zoxide
-configure-fzf
-configure-zellij
-configure-alacritty
-configure-nushell
 
 
 # Check that the Rust toolchain is installed
