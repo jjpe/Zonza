@@ -30,7 +30,7 @@ def main [] {
         configure-nushell
     }
 
-    touch $marker-path
+    touch ($marker-path)
 }
 
 def install-bins [] {
