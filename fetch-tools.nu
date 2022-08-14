@@ -1,6 +1,6 @@
 #!/usr/bin/env nu
 
-# Install Rust
+# Install Rust if not present
 if (is-rust-installed?) {
     log "Rust is already installed"
 } else {
@@ -22,7 +22,7 @@ cargo-install zellij            # tab/pane support
 cargo-install zoxide --locked   # CLI navigation on steroids
 
 
-# Install more general tools
+# Install some portable tools:
 cargo-install bat # modern update to `cat`
 cargo-install bottom --locked # modern update to `top` and `htop`
 cargo-install bacon --locked # A background Rust code checker
@@ -46,19 +46,17 @@ cargo-install rusty-man # CLI viewer for rustdoc docs
 cargo-install tokei # SLOC stats
 cargo-install wasm-bindgen-cli # essential Rust WASM tooling
 cargo-install wasm-pack # essential Rust WASM tooling
+install-lazygit # TUI for git
 
-# Install non-Rust bins:
-install-lazygit
-
-# Configure
+# Configure stack components
 log "Configuring the ZO.N.Z.A. stack..."
 add-env-entry "let-env PATH = ($env.PATH | uniq)"
+
 configure-zoxide
 configure-fzf
-
-# Configure Nushell plugins
-cargo-install nu_plugin_gstat # git stat plugin for nushell
-register -e json ~/.cargo/bin/nu_plugin_gstat
+configure-zellij
+configure-alacritty
+configure-nushell
 
 
 # Check that the Rust toolchain is installed
@@ -111,6 +109,36 @@ def install-lazygit [] {
     cp /tmp/lazygit/lazygit $bin-dir
 }
 
+def configure-zellij [] {
+    log "Configuring Zellij"
+    cp ./defaults/zellij/config.yaml ~/.config/zellij/config.yaml
+    cp ./defaults/zellij/layout.yaml ~/.config/zellij/layout.yaml
+}
+
+def configure-alacritty [] {
+    log "Configuring Alacritty"
+    # TODO
+}
+
+def configure-nushell [] {
+    log "Configuring Nushell"
+
+    # Configure Nushell plugins
+    cargo-install nu_plugin_gstat # git stat plugin for nushell
+    register -e json ~/.cargo/bin/nu_plugin_gstat
+
+    add-config-entry ("
+def cargo-clean-dev-projects [] {
+    fd --type f Cargo.toml ~/dev
+    | split row \"\n\"
+    | path dirname
+    | par-each {|dir| echo $\"Cleaning ($dir)\"; cd $dir; cargo clean}
+}" | str trim)
+
+
+    # TODO
+}
+
 def configure-zoxide [] {
     add-env-entry (
         "zoxide init nushell --hook prompt | save ~/.zoxide.nu"
@@ -134,7 +162,6 @@ def prepend-to-path [p: path] {
 
 def add-env-entry [...msg: string] {
     $msg | prepend '' | save --append ($nu.env-path)
-
 }
 
 def add-config-entry [...msg: string] {

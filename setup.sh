@@ -20,14 +20,3 @@ fi
 
 ## Fetch the tools and store them in  ~/.cargo/bin
 nushell/nu ./fetch-tools.nu
-
-## Configure the ZO.N.Z.A. stack
-
-# TODO
-
-
-
-## Cleanup
-
-# TODO: ask user
-# rm -rf $NU_DIR

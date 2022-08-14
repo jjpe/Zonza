@@ -1,0 +1,33 @@
+# This is a default Zellij layout config. For more configuration
+# options, see   https://zellij.dev/documentation/layouts.html
+
+---
+template:
+  direction: Horizontal
+  parts:
+    - direction: Vertical
+      borderless: true
+      split_size:
+        Fixed: 1
+      run:
+        plugin:
+          location: "zellij:tab-bar"
+    - direction: Vertical
+      body: true
+    - direction: Vertical
+      borderless: true
+      split_size:
+        Fixed: 2
+      run:
+        plugin:
+          location: "zellij:status-bar"
+tabs:
+  - direction: Vertical
+    name: "sysmon" # Keep an eye on your system
+    run:
+      command: {cmd: btm, args: ["-T", "--color", "nord"]}
+  - direction: Vertical
+    name: "****" # General Tab (as in 4 stars :p)
+    focus: true
+    run:
+      command: {cmd: nu, args: ["-c", "cd ~/; nu"]}
