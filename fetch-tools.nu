@@ -152,10 +152,11 @@ def configure-nushell [] {
     cargo-install nu_plugin_gstat # git stat plugin for nushell
     register -e json ~/.cargo/bin/nu_plugin_gstat
 
+    # Custom commands:
     add-config-entry ("
 def cargo-clean-dev-projects [] {
     fd --type f Cargo.toml ~/dev
-    | split row \"\n\"
+    | split row \"\\n\"
     | path dirname
     | par-each {|dir| echo $\"Cleaning ($dir)\"; cd $dir; cargo clean}
 }" | str trim)
