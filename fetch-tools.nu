@@ -1,37 +1,48 @@
 #!/usr/bin/env nu
 
-# def main [] {
-# Install Rust if not present
-if (is-rust-installed?) {
-    log "Rust is already installed"
-} else {
-    log "Installing Rust"
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+def main [] {
+    # Install Rust if not present
+    if (is-rust-installed?) {
+        log "Rust is already installed"
+    } else {
+        log "Installing Rust"
+        curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    }
+
+    install-os-libraries
+    install-bins
+
+    let marker-path = $"($nu.home-path)/.zonza"
+    if ($marker-path | path exists) {
+        log "Updated the ZO.N.Z.A. stack"
+    } else {
+        log "Configuring the ZO.N.Z.A. stack components..."
+        add-env-entry "let-env PATH = ($env.PATH | uniq)"
+
+        configure-zoxide
+        configure-fzf
+        configure-zellij
+        configure-alacritty
+        configure-nushell
+     }
+
+    touch $marker-path
 }
 
-install-os-libraries
-install-bins
-
-let marker-path = "~/.zonza"
-if ($marker-path | path exists) {
-    # TODO: update
- } else {
-    # TODO: fresh install
-
-    # Configure stack components
-    log "Configuring the ZO.N.Z.A. stack..."
-    add-env-entry "let-env PATH = ($env.PATH | uniq)"
-
-    configure-zoxide
-    configure-fzf
-    configure-zellij
-    configure-alacritty
-    configure-nushell
+def install-os-libraries [] {
+    if (uname -a | str contains "Ubuntu") {
+        log "Installing prerequisite Ubuntu-hosted libraries"
+        sudo apt install [
+            libsqlite3-dev              # for diesel_cli
+            libpq-dev                   # for diesel_cli
+            default-libmysqlclient-dev  # for diesel_cli
+            fonts-powerline             # for alacritty
+        ]
+    } else {
+        log "Unsupported OS"
+        exit 1;
+    }
 }
-
-touch $marker-path
-# }
-
 
 def install-bins [] {
     # The idea behind these tools is to provide a contemporary
@@ -73,8 +84,6 @@ def install-bins [] {
     install-lazygit # TUI for git
 }
 
-
-
 # Check that the Rust toolchain is installed
 def is-rust-installed? [] {
     let rustc-path = (whereis rustc | parse "rustc: {path}")
@@ -86,21 +95,6 @@ def is-rust-installed? [] {
         | str trim
         | str collect
         | path exists
-    }
-}
-
-def install-os-libraries [] {
-    if (uname -a | str contains "Ubuntu") {
-        log "Installing some prerequisite Ubuntu-hosted libraries"
-        sudo apt install [
-            libsqlite3-dev              # for diesel_cli
-            libpq-dev                   # for diesel_cli
-            default-libmysqlclient-dev  # for diesel_cli
-            fonts-powerline             # for alacritty
-        ]
-    } else {
-        log "Unsupported OS"
-        exit 1;
     }
 }
 
@@ -141,18 +135,18 @@ def install-lazygit [] {
 }
 
 def configure-zellij [] {
-    log "Configuring Zellij"
+    log "Configuring zellij"
     cp ./defaults/zellij/config.yaml ~/.config/zellij/config.yaml
     cp ./defaults/zellij/layout.yaml ~/.config/zellij/layout.yaml
 }
 
 def configure-alacritty [] {
-    log "Configuring Alacritty"
+    log "Configuring alacritty"
     # TODO
 }
 
 def configure-nushell [] {
-    log "Configuring Nushell"
+    log "Configuring nushell"
 
     # Configure Nushell plugins
     cargo-install nu_plugin_gstat # git stat plugin for nushell
@@ -166,11 +160,12 @@ def cargo-clean-dev-projects [] {
     | par-each {|dir| echo $\"Cleaning ($dir)\"; cd $dir; cargo clean}
 }" | str trim)
 
-
     # TODO
+
 }
 
 def configure-zoxide [] {
+    log "Configuring zoxide"
     add-env-entry (
         "zoxide init nushell --hook prompt | save ~/.zoxide.nu"
     )
@@ -178,6 +173,7 @@ def configure-zoxide [] {
 }
 
 def configure-fzf [] {
+    log "Configuring fzf"
     # TODO: ask user where FZF is installed
     let fzf-path = "~/dev/fzf/bin"
     add-config-entry ($"let-env PATH = \(prepend-to-path ($fzf-path))")
