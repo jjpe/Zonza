@@ -2,34 +2,34 @@
 
 def main [] {
     # Install Rust if not present
-    if (is-rust-installed?) {
+    if (is_rust_installed?) {
         log "Rust is already installed"
     } else {
         log "Installing Rust"
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
     }
 
-    install-os-libraries
-    install-bins
+    install_os_libraries
+    install_bins
 
-    let marker-path = $"($nu.home-path)/.zonza"
-    if ($marker-path | path exists) {
+    let marker_path = $"($nu.home-path)/.zonza"
+    if ($marker_path | path exists) {
         log "Updated the ZO.N.Z.A. stack"
     } else {
         log "Configuring the ZO.N.Z.A. stack components..."
-        add-env-entry "let-env PATH = ($env.PATH | uniq)"
+        add_env_entry "let-env PATH = ($env.PATH | uniq)"
 
-        configure-zoxide
-        configure-fzf
-        configure-zellij
-        configure-alacritty
-        configure-nushell
+        configure_zoxide
+        configure_fzf
+        configure_zellij
+        configure_alacritty
+        configure_nushell
      }
 
-    touch $marker-path
+    touch $marker_path
 }
 
-def install-os-libraries [] {
+def install_os_libraries [] {
     if (uname -a | str contains "Ubuntu") {
         log "Installing prerequisite Ubuntu-hosted libraries"
         sudo apt install [
@@ -44,7 +44,7 @@ def install-os-libraries [] {
     }
 }
 
-def install-bins [] {
+def install_bins [] {
     # The idea behind these tools is to provide a contemporary
     # UX while also improving on functionality.
     # To that end, the sandwhich to be made is:
@@ -52,45 +52,48 @@ def install-bins [] {
     # - zellij in the middle
     # - alacritty at the bottom
     # - zoxide for superior path navigation
-    cargo-install alacritty         # fast H/W accelerated terminal
-    cargo-install nu --all-features # a modern, FP-style shell
-    cargo-install zellij            # tab/pane support
-    cargo-install zoxide --locked   # CLI navigation on steroids
+    cargo_install alacritty         # fast H/W accelerated terminal
+    cargo_install zoxide --locked   # CLI navigation on steroids
+    cargo_install nu --all_features --git https://github.com/nushell/nushell.git  # a modern, FP-style shell
+    cargo_install nu_plugin_gstat --git https://github.com/nushell/nushell.git   # git stat plugin for nushell
+    register -e json ~/.cargo/bin/nu_plugin_gstat
+    cargo_install zellij            # tab/pane support
+    cargo_install starship --locked # Useful prompt info
 
     # Install some portable tools:
-    cargo-install bat # modern update to `cat`
-    cargo-install bottom --locked # modern update to `top` and `htop`
-    cargo-install bacon --locked # A background Rust code checker
-    cargo-install cargo-asm --locked # Displays the ASM/llvm-ir for Rust src.
-    cargo-install cargo-audit # vuln auditing tool
-    cargo-install cargo-cache # manage Rust crate cache
-    cargo-install cargo-make # build tool for complex projects
-    cargo-install cargo-outdated # scans a project for outdated deps
-    cargo-install diesel_cli --locked # Diesel CLI util
-    cargo-install du-dust # summarize dir disk space usage
-    cargo-install dua # alternative for du-dust
-    cargo-install exa # modern update to `ls`
-    # cargo-install eva  # calculator REPL
-    cargo-install evcxr_repl --locked # A Rust REPL
-    cargo-install fd-find --locked # modern update to `find`
-    cargo-install grex --locked # Generate regexes from samples
-    cargo-install hyperfine # CLI benchmarking tool
-    cargo-install irust --locked # A Rust REPL
-    cargo-install ripgrep # modern update to `grep`
-    cargo-install rusty-man # CLI viewer for rustdoc docs
-    cargo-install tokei # SLOC stats
-    cargo-install wasm-bindgen-cli # essential Rust WASM tooling
-    cargo-install wasm-pack # essential Rust WASM tooling
-    install-lazygit # TUI for git
+    cargo_install bat # modern update to `cat`
+    cargo_install bottom --locked # modern update to `top` and `htop`
+    cargo_install bacon --locked # A background Rust code checker
+    cargo_install cargo-asm --locked # Displays the ASM/llvm-ir for Rust src.
+    cargo_install cargo-audit # vuln auditing tool
+    cargo_install cargo-cache # manage Rust crate cache
+    cargo_install cargo-make # build tool for complex projects
+    cargo_install cargo-outdated # scans a project for outdated deps
+    cargo_install diesel_cli --locked # Diesel CLI util
+    cargo_install du-dust # summarize dir disk space usage
+    cargo_install dua # alternative for du-dust
+    cargo_install exa # modern update to `ls`
+    # cargo_install eva  # calculator REPL
+    cargo_install evcxr_repl --locked # A Rust REPL
+    cargo_install fd-find --locked # modern update to `find`
+    cargo_install grex --locked # Generate regexes from samples
+    cargo_install hyperfine # CLI benchmarking tool
+    cargo_install irust --locked # A Rust REPL
+    cargo_install ripgrep # modern update to `grep`
+    cargo_install rusty-man # CLI viewer for rustdoc docs
+    cargo_install tokei # SLOC stats
+    cargo_install wasm-bindgen-cli # essential Rust WASM tooling
+    cargo_install wasm-pack # essential Rust WASM tooling
+    install_lazygit # TUI for git
 }
 
 # Check that the Rust toolchain is installed
-def is-rust-installed? [] {
-    let rustc-path = (whereis rustc | parse "rustc: {path}")
-    if ($rustc-path | empty?) {
+def is_rust_installed? [] {
+    let rustc_path = (whereis rustc | parse "rustc: {path}")
+    if ($rustc_path | empty?) {
         false
     } else {
-        $rustc-path
+        $rustc_path
         | get path
         | str trim
         | str collect
@@ -99,62 +102,58 @@ def is-rust-installed? [] {
 }
 
 # Install a Rust binary distributed via https://crates.io
-def cargo-install [
+def cargo_install [
     cmd: string,
     --locked: bool,
     --force: bool,
-    --all-features: bool,
+    --all_features: bool,
+    --version: string,
+    --git: string,
 ] {
-    let flags = [
-        {value: $locked,       repr: "--locked"}
-        {value: $force,        repr: "--force"}
-        {value: $all-features, repr: "--all-features"}
-    ]
-    let args = (stringify-flags $flags | where not ($it | empty?))
-    let entry = ($cmd | append $args | str collect ' ' | str trim)
-    log $"Installing ($entry)"
-    cargo install $cmd $args
+    let options = ([
+        (if ($locked) { "--locked" } else { "" })
+        (if ($force) { "--force" } else { "" })
+        (if ($all_features) { "--all-features" } else { "" })
+        (if ($version != $nothing) { $"--version=($version)" } else { "" })
+        (if ($git != $nothing) { $"--git=($git)" } else { "" })
+    ] | each {|opt| $opt | where $opt != "" } | flatten)
+    log $"Installing ($cmd) ($options)"
+    cargo install $cmd $options
 }
 
-def install-lazygit [] {
-    let lazygit-version = "0.35"
-    let lazygit-file = $"lazygit_($lazygit-version)_Linux_x86_64.tar.gz"
-    let lazygit-base-url = (
-        "https://github.com/jesseduffield/lazygit/releases/download"
-    )
-    let tmp-lazygit-dir = "/tmp/lazygit"
-    let bin-dir = "~/bin"
+def install_lazygit [] {
+    let version = "0.35"
+    let filename = $"lazygit_($version)_Linux_x86_64.tar.gz"
+    let base_url = "https://github.com/jesseduffield/lazygit/releases/download"
+    let bin_dir = $"($nu.home-path)/bin"
+    mkdir $bin_dir
+    let tmp_dir = "/tmp/lazygit"
+    mkdir $tmp_dir
 
     log "Installing lazygit"
-    fetch --raw $"($lazygit-base-url)/v($lazygit-version)/($lazygit-file)"
-    | save --raw $"/tmp/($lazygit-file)"
-    mkdir $tmp-lazygit-dir
-    tar -xf $"/tmp/($lazygit-file)" -C $tmp-lazygit-dir
-    mkdir $bin-dir
-    cp /tmp/lazygit/lazygit $bin-dir
+    fetch --raw $"($base_url)/v($version)/($filename)"
+    | save --raw $"($tmp_dir)/($filename)"
+    tar -xf $"($tmp_dir)/($filename)" -C $tmp_dir
+    cp /tmp/lazygit/lazygit $bin_dir
 }
 
-def configure-zellij [] {
+def configure_zellij [] {
     log "Configuring zellij"
     cp ./defaults/zellij/config.yaml ~/.config/zellij/config.yaml
     cp ./defaults/zellij/layout.yaml ~/.config/zellij/layout.yaml
 }
 
-def configure-alacritty [] {
+def configure_alacritty [] {
     log "Configuring alacritty"
     # TODO
 }
 
-def configure-nushell [] {
+def configure_nushell [] {
     log "Configuring nushell"
 
-    # Configure Nushell plugins
-    cargo-install nu_plugin_gstat # git stat plugin for nushell
-    register -e json ~/.cargo/bin/nu_plugin_gstat
-
     # Custom commands:
-    add-config-entry ("
-def cargo-clean-dev-projects [] {
+    add_config_entry ("
+def cargo_clean_dev_projects [] {
     fd --type f Cargo.toml ~/dev
     | split row \"\\n\"
     | path dirname
@@ -165,21 +164,21 @@ def cargo-clean-dev-projects [] {
 
 }
 
-def configure-zoxide [] {
+def configure_zoxide [] {
     log "Configuring zoxide"
-    add-env-entry (
+    add_env_entry (
         "zoxide init nushell --hook prompt | save ~/.zoxide.nu"
     )
-    add-config-entry "source ~/.zoxide.nu"
+    add_config_entry "source ~/.zoxide.nu"
 }
 
-def configure-fzf [] {
+def configure_fzf [] {
     log "Configuring fzf"
     # TODO: ask user where FZF is installed
-    let fzf-path = "~/dev/fzf/bin"
-    add-config-entry ($"let-env PATH = \(prepend-to-path ($fzf-path))")
-    add-config-entry ("
-def prepend-to-path [p: path] {
+    let fzf_path = "~/dev/fzf/bin"
+    add_config_entry ($"let-env PATH = \(prepend_to_path ($fzf_path))")
+    add_config_entry ("
+def prepend_to_path [p: path] {
     if ($p in $env.PATH) {
         $env.PATH | uniq
     } else {
@@ -188,16 +187,12 @@ def prepend-to-path [p: path] {
 }" | str trim)
 }
 
-def add-env-entry [...msg: string] {
+def add_env_entry [...msg: string] {
     $msg | prepend '' | save --append ($nu.env-path)
 }
 
-def add-config-entry [...msg: string] {
+def add_config_entry [...msg: string] {
     $msg | prepend '' | save --append ($nu.config-path)
-}
-
-def stringify-flags [flags] {
-    $flags | each {|f| if ($f.value) { $f.repr } else { "" }}
 }
 
 def log [...msgs: string] {
