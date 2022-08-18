@@ -168,11 +168,15 @@ def configure_zellij [] {
 
 def configure_alacritty [] {
     log "Configuring alacritty"
-    # TODO
+    cp ./defaults/alacritty/alacritty.yml ~/.config/alacritty/alacritty.yml
 }
 
 def configure_nushell [] {
     log "Configuring nushell"
+
+    cp ./defaults/nushell/config.nu ~/.config/nushell/config.nu
+    cp ./defaults/nushell/env.nu    ~/.config/nushell/env.nu
+
 
     # Custom commands:
     add_config_entry ("
@@ -192,7 +196,8 @@ def configure_starship [] {
     add_env_entry ("starship init nu | save ~/.cache/starship/init.nu")
     add_config_entry ("source ~/.cache/starship/init.nu")
 
-    touch $"($nu.home-path)/.config/starship.toml"
+    # touch $"($nu.home-path)/.config/starship.toml"
+    cp ./defaults/starship/starship.toml ~/.config/starship.toml
 }
 
 def configure_zoxide [] {
