@@ -1,6 +1,8 @@
 #!/usr/bin/env nu
 
 def main [] {
+    install_os_libraries
+
     # Install Rust if not present
     if (is_rust_installed?) {
         log "Rust is already installed"
@@ -9,7 +11,6 @@ def main [] {
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
     }
 
-    install_os_libraries
     install_bins
 
     let marker_path = $"($nu.home-path)/.zonza"
@@ -25,7 +26,7 @@ def main [] {
         configure_alacritty
         configure_nushell
         configure_starship
-     }
+    }
 
     touch $marker_path
 }
@@ -57,7 +58,7 @@ def install_bins [] {
     cargo_install zoxide --locked   # CLI navigation on steroids
     cargo_install nu --all_features --git https://github.com/nushell/nushell.git  # a modern, FP-style shell
     cargo_install nu_plugin_gstat --git https://github.com/nushell/nushell.git   # git stat plugin for nushell
-    register -e json ~/.cargo/bin/nu_plugin_gstat
+    nu -c "register -e json ~/.cargo/bin/nu_plugin_gstat"
     cargo_install zellij            # tab/pane support
     cargo_install starship --locked # Useful prompt info
 
