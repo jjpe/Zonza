@@ -30,5 +30,4 @@ tabs:
     name: "****" # General Tab (as in 4 stars :p)
     focus: true
     run:
-      command: {cmd: nu, args: ["-c", "cd ~/; nu"]}
-
+      command: {cmd: nu, args: ["-e", "cd ~/"]}
