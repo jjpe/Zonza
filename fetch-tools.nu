@@ -39,6 +39,13 @@ def install_os_libraries [] {
             libpq-dev                   # for diesel_cli
             default-libmysqlclient-dev  # for diesel_cli
             fonts-powerline             # for alacritty
+            gcc gcc-doc g++             # GCC tools
+            cmake                       # build tool for C/C++
+            libfontconfig-dev           # for alacritty
+            libx11-xcb-dev              # for alacritty
+            libxcb-render0-de           # for alacritty
+            libxcb-shape0-dev           # for alacritty
+            libxcb-xfixes0-dev          # for alacritty
         ]
     } else {
         log "Unsupported OS"
