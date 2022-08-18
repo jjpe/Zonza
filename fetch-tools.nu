@@ -20,12 +20,12 @@ def main [] {
     } else {
         log "Configuring the ZO.N.Z.A. stack components..."
 
+        configure_nushell
+        configure_alacritty
+        configure_zellij
+        configure_starship
         configure_zoxide
         configure_fzf
-        configure_zellij
-        configure_alacritty
-        configure_nushell
-        configure_starship
 
         add_env_entry "let-env PATH = ($env.PATH | uniq)"
     }
