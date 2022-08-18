@@ -10,6 +10,8 @@ def main [] {
     } else {
         log "Installing Rust"
         curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+        rustup component add rust-src
+        install_rust_analyzer "2022-08-15" # works with Rust v1.63
     }
 
     install_bins
@@ -31,6 +33,21 @@ def main [] {
     }
 
     touch $marker_path
+}
+
+def install_rust_analyzer [date: string] {
+    let base_url = "https://github.com/rust-lang/rust-analyzer/releases/download"
+    let binfile = "rust-analyzer-x86_64-unknown-linux-gnu"
+    let rafile = $"($binfile).gz"
+    let tmp_dir = $"/tmp/rust-analyzer"
+    mkdir $tmp_dir
+    log "Installing rust-analyzer"
+    fetch --raw $"($base_url)/($date)/($rafile)"
+    | save --raw $"($tmp_dir)/($rafile)"
+    gzip -d $"($tmp_dir)/($rafile)"
+
+    chmod +x $"($tmp_dir)/($binfile)"
+    mv $"($tmp_dir)/($binfile)" ~/bin/rust-analyzer
 }
 
 def install_os_libraries [] {
