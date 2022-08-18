@@ -24,6 +24,7 @@ def main [] {
         configure_zellij
         configure_alacritty
         configure_nushell
+        configure_starship
      }
 
     touch $marker_path
@@ -162,6 +163,14 @@ def cargo_clean_dev_projects [] {
 
     # TODO
 
+}
+
+def configure_starship [] {
+    add_env_entry ("mkdir ~/.cache/starship")
+    add_env_entry ("starship init nu | save ~/.cache/starship/init.nu")
+    add_config_entry ("source ~/.cache/starship/init.nu")
+
+    touch $"($nu.home-path)/.config/starship.toml"
 }
 
 def configure_zoxide [] {
