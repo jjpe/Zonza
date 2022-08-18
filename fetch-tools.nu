@@ -177,7 +177,6 @@ def configure_nushell [] {
     cp ./defaults/nushell/config.nu ~/.config/nushell/config.nu
     cp ./defaults/nushell/env.nu    ~/.config/nushell/env.nu
 
-
     # Custom commands:
     add_config_entry ("
 def cargo_clean_dev_projects [] {
@@ -186,8 +185,6 @@ def cargo_clean_dev_projects [] {
     | path dirname
     | par-each {|dir| echo $\"Cleaning ($dir)\"; cd $dir; cargo clean}
 }" | str trim)
-
-    # TODO
 
 }
 

@@ -1,20 +1,20 @@
 # Nushell Environment Config File
 
 def create_left_prompt [] {
-    let date_segment = ([
-        (date now | date format '%m/%d/%Y')
-    ] | prepend $"(ansi blue)" | str collect)
-    let time_segment = ([
-        (date now | date format '%H:%M:%S')
-    ] | prepend $"(ansi green)" | str collect)
-    let path_segment = if (is-admin) {
-        $"(ansi red_bold)($env.PWD)"
-    } else {
-        $"(ansi purple)($env.PWD)"
-    }
-    let marker = "🚦"
+    # let date_segment = ([
+    #     (date now | date format '%m/%d/%Y')
+    # ] | prepend $"(ansi blue)" | str collect)
+    # let time_segment = ([
+    #     (date now | date format '%H:%M:%S')
+    # ] | prepend $"(ansi green)" | str collect)
+    # let path_segment = if (is-admin) {
+    #     $"(ansi red_bold)($env.PWD)"
+    # } else {
+    #     $"(ansi purple)($env.PWD)"
+    # }
+    # let marker = "🚦"
 
-    $"($marker)($date_segment)  ($time_segment)\n($marker)($path_segment)"
+    # $"($marker)($date_segment)  ($time_segment)\n($marker)($path_segment)"
 }
 
 def create_right_prompt [] {
