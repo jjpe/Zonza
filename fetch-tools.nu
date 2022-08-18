@@ -162,20 +162,22 @@ def install_nvm [] {
 
 def configure_zellij [] {
     log "Configuring zellij"
-    cp ./defaults/zellij/config.yaml ~/.config/zellij/config.yaml
-    cp ./defaults/zellij/layout.yaml ~/.config/zellij/layout.yaml
+    cp -r ./defaults/zellij ~/.config/zellij
+    # cp ./defaults/zellij/config.yaml ~/.config/zellij/config.yaml
+    # cp ./defaults/zellij/layout.yaml ~/.config/zellij/layout.yaml
 }
 
 def configure_alacritty [] {
     log "Configuring alacritty"
-    cp ./defaults/alacritty/alacritty.yml ~/.config/alacritty/alacritty.yml
+    cp -r ./defaults/alacritty ~/.config/alacritty
 }
 
 def configure_nushell [] {
     log "Configuring nushell"
 
-    cp ./defaults/nushell/config.nu ~/.config/nushell/config.nu
-    cp ./defaults/nushell/env.nu    ~/.config/nushell/env.nu
+    cp -r ./defaults/nushell ~/.config/nushell
+    # cp ./defaults/nushell/config.nu ~/.config/nushell/config.nu
+    # cp ./defaults/nushell/env.nu    ~/.config/nushell/env.nu
 
     # Custom commands:
     add_config_entry ("
@@ -195,6 +197,7 @@ def configure_starship [] {
 
     # touch $"($nu.home-path)/.config/starship.toml"
     cp ./defaults/starship/starship.toml ~/.config/starship.toml
+    # cp ./defaults/starship/starship.toml ~/.config/starship.toml
 }
 
 def configure_zoxide [] {
