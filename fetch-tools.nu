@@ -19,7 +19,6 @@ def main [] {
         log "Updated the ZO.N.Z.A. stack"
     } else {
         log "Configuring the ZO.N.Z.A. stack components..."
-        add_env_entry "let-env PATH = ($env.PATH | uniq)"
 
         configure_zoxide
         configure_fzf
@@ -27,6 +26,8 @@ def main [] {
         configure_alacritty
         configure_nushell
         configure_starship
+
+        add_env_entry "let-env PATH = ($env.PATH | uniq)"
     }
 
     touch $marker_path
