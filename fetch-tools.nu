@@ -75,6 +75,7 @@ def install_bins [] {
     # - zoxide for superior path navigation
     cargo_install alacritty         # fast H/W accelerated terminal
     cargo_install zoxide --locked   # CLI navigation on steroids
+    install_fzf                     # Useful together with zoxide
     cargo_install nu --all_features --git https://github.com/nushell/nushell.git  # a modern, FP-style shell
     # cargo_install nu_plugin_gstat --git https://github.com/nushell/nushell.git   # git stat plugin for nushell
     # nu -c "register -e json ~/.cargo/bin/nu_plugin_gstat"
@@ -157,6 +158,18 @@ def install_lazygit [] {
     | save --raw $"($tmp_dir)/($filename)"
     tar -xf $"($tmp_dir)/($filename)" -C $tmp_dir
     cp /tmp/lazygit/lazygit $bin_dir
+}
+
+def install_fzf [] {
+    let tmp_dir = "/tmp/fzf"
+    log "Installing fzf"
+    if ($"($tmp_dir)/.git" | path exists) {
+        log "fzf git repo found"
+    } else {
+        git clone https://github.com/junegunn/fzf.git --depth 1 $tmp_dir
+    }
+    cd $tmp_dir
+    ./install --no-bash --no-zsh --no-fish
 }
 
 def install_nvm [] {
