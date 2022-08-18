@@ -86,6 +86,7 @@ def install_bins [] {
     cargo_install wasm-bindgen-cli # essential Rust WASM tooling
     cargo_install wasm-pack # essential Rust WASM tooling
     install_lazygit # TUI for git
+    install_nvm # Manage multiple NodeJS installs
 }
 
 # Check that the Rust toolchain is installed
@@ -136,6 +137,19 @@ def install_lazygit [] {
     | save --raw $"($tmp_dir)/($filename)"
     tar -xf $"($tmp_dir)/($filename)" -C $tmp_dir
     cp /tmp/lazygit/lazygit $bin_dir
+}
+
+def install_nvm [] {
+    let version = "0.39.1"
+    let url = $"https://github.com/nvm-sh/nvm/raw/v($version)/install.sh"
+    let tmp_dir = "/tmp/nvm"
+    mkdir $tmp_dir
+    let filepath = $"($tmp_dir)/install_nvm.sh";
+
+    log "Installing NVM"
+    fetch $url | save --raw $filepath
+    chmod +x $filepath
+    $filepath
 }
 
 def configure_zellij [] {
