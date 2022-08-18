@@ -2,6 +2,7 @@
 
 def main [] {
     install_os_libraries
+    install_powerline_fonts
 
     # Install Rust if not present
     if (is_rust_installed?) {
@@ -38,7 +39,6 @@ def install_os_libraries [] {
             libsqlite3-dev              # for diesel_cli
             libpq-dev                   # for diesel_cli
             default-libmysqlclient-dev  # for diesel_cli
-            fonts-powerline             # for alacritty
             gcc gcc-doc g++             # GCC tools
             cmake                       # build tool for C/C++
             libfontconfig-dev           # for alacritty
@@ -51,6 +51,17 @@ def install_os_libraries [] {
         log "Unsupported OS"
         exit 1;
     }
+}
+
+def install_powerline_fonts [] {
+    log "Installing powerline fonts"
+    let tmp_dir = "/tmp/powerline-fonts"
+    if ($"($tmp_dir)/.git" | path exists) {
+        log "powerline git repo found"
+    } else {
+        git clone https://github.com/powerline/fonts.git --depth=1 $tmp_dir
+    }
+    bash -c $"($tmp_dir)/install.sh"
 }
 
 def install_bins [] {
