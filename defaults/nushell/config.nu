@@ -504,23 +504,3 @@ let-env config = {
     }
   ]
 }
-
-source ~/.zoxide.nu
-
-let-env PATH = (prepend_to_path ~/dev/fzf/bin)
-
-def prepend_to_path [p: path] {
-    if ($p in $env.PATH) {
-        $env.PATH | uniq
-    } else {
-        $env.PATH | prepend $p | uniq
-    }
-}
-
-def cargo_clean_dev_projects [] {
-    fd --type f Cargo.toml ~/dev
-    | split row "\n"
-    | path dirname
-    | par-each {|dir| echo $"Cleaning ($dir)"; cd $dir; cargo clean}
-}
-
