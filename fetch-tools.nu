@@ -57,8 +57,8 @@ def install_bins [] {
     cargo_install alacritty         # fast H/W accelerated terminal
     cargo_install zoxide --locked   # CLI navigation on steroids
     cargo_install nu --all_features --git https://github.com/nushell/nushell.git  # a modern, FP-style shell
-    cargo_install nu_plugin_gstat --git https://github.com/nushell/nushell.git   # git stat plugin for nushell
-    nu -c "register -e json ~/.cargo/bin/nu_plugin_gstat"
+    # cargo_install nu_plugin_gstat --git https://github.com/nushell/nushell.git   # git stat plugin for nushell
+    # nu -c "register -e json ~/.cargo/bin/nu_plugin_gstat"
     cargo_install zellij            # tab/pane support
     cargo_install starship --locked # Useful prompt info
 
