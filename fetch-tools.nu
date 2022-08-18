@@ -43,7 +43,7 @@ def install_os_libraries [] {
             cmake                       # build tool for C/C++
             libfontconfig-dev           # for alacritty
             libx11-xcb-dev              # for alacritty
-            libxcb-render0-de           # for alacritty
+            libxcb-render0-dev          # for alacritty
             libxcb-shape0-dev           # for alacritty
             libxcb-xfixes0-dev          # for alacritty
         ]
