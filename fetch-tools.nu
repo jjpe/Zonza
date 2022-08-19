@@ -169,7 +169,6 @@ def install_lazygit [] {
     mkdir $bin_dir
     let tmp_dir = "/tmp/lazygit"
     mkdir $tmp_dir
-
     log "Installing lazygit"
     fetch --raw $"($base_url)/v($version)/($filename)"
     | save --raw $"($tmp_dir)/($filename)"
@@ -185,6 +184,7 @@ def install_fzf [] {
     if ($"($tmp_dir)/.git" | path exists) {
         log "fzf git repo found"
     } else {
+        rm -rf $tmp_dir # prevent dir content mingling
         git clone https://github.com/junegunn/fzf.git --depth 1 $tmp_dir
     }
     cd $tmp_dir
