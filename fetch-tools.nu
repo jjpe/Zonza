@@ -179,6 +179,8 @@ def install_lazygit [] {
 
 def install_fzf [] {
     let tmp_dir = "/tmp/fzf"
+    let bin_dir = $"($nu.home-path)/bin"
+    mkdir $bin_dir
     log "Installing fzf"
     if ($"($tmp_dir)/.git" | path exists) {
         log "fzf git repo found"
@@ -187,6 +189,7 @@ def install_fzf [] {
     }
     cd $tmp_dir
     ./install --no-bash --no-zsh --no-fish
+    cp $"($tmp_dir)/bin/fzf" $bin_dir/fzf
 }
 
 def install_nvm [] {
