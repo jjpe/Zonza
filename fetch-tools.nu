@@ -189,7 +189,9 @@ def install_fzf [] {
     }
     cd $tmp_dir
     ./install --no-bash --no-zsh --no-fish
-    cp $"($tmp_dir)/bin/fzf" $"($bin_dir)/fzf"
+    do -i {
+        cp $"($tmp_dir)/bin/fzf" $"($bin_dir)/fzf"
+    }
 }
 
 def install_nvm [] {
