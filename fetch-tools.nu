@@ -28,6 +28,7 @@ def main [] {
         configure_starship
         configure_zoxide
         configure_fzf
+        configure_fnm
 
         add_env_entry "let-env PATH = ($env.PATH | uniq)"
     }
@@ -115,6 +116,7 @@ def install_bins [] {
     # cargo_install eva  # calculator REPL
     cargo_install evcxr_repl --locked # A Rust REPL
     cargo_install fd-find --locked # modern update to `find`
+    cargo_install fnm --git https://github.com/zaucy/fnm.git --branch feat/nushell-support # the Fast NodeJS Manager
     cargo_install grex --locked # Generate regexes from samples
     cargo_install hyperfine # CLI benchmarking tool
     cargo_install irust --locked # A Rust REPL
@@ -124,7 +126,6 @@ def install_bins [] {
     cargo_install wasm-bindgen-cli # essential Rust WASM tooling
     cargo_install wasm-pack # essential Rust WASM tooling
     install_lazygit # TUI for git
-    install_nvm # Manage multiple NodeJS installs
 }
 
 # Check that the Rust toolchain is installed
@@ -196,19 +197,6 @@ def install_fzf [] {
     }
 }
 
-def install_nvm [] {
-    let version = "0.39.1"
-    let url = $"https://github.com/nvm-sh/nvm/raw/v($version)/install.sh"
-    let tmp_dir = "/tmp/nvm"
-    mkdir $tmp_dir
-    let filepath = $"($tmp_dir)/install_nvm.sh";
-
-    log "Installing NVM"
-    fetch $url | save --raw $filepath
-    chmod +x $filepath
-    $filepath
-}
-
 def configure_zellij [] {
     log "Configuring zellij"
     cp -r ./defaults/zellij ~/.config/zellij
@@ -262,6 +250,12 @@ def prepend_to_path [p: path] {
         $env.PATH | prepend $p | uniq
     }
 }" | str trim)
+}
+
+def configure_fnm [] {
+    log "Configuring fnm"
+    add_config_entry "# Configure for fnm, the Fast NodeJS Manager"
+    fnm env --shell=nushell --use-on-cd | save --append ($nu.config-path)
 }
 
 def add_env_entry [...msg: string] {
