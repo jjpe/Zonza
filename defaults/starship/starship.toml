@@ -1,10 +1,16 @@
 # Get editor completions based on the config schema
+# For more details on what can be configured and how,
+# see  https://starship.rs/config/
+
+# Get editor completions based on the config schema
 "$schema" = 'https://starship.rs/config-schema.json'
 
 # Inserts a blank line between shell prompts
-add_newline = true
+add_newline = false
 
 format = """
+$cmd_duration
+[-----------------------------------------------------------------------------------------------------------------------------------------------](purple bold)
 $time$all$directory$character
 """
 
@@ -20,23 +26,41 @@ time_format = "%d-%m-%Y %T"
 
 [git_branch]
 format = " [$symbol$branch(:$remote_branch)]($style)"
+style = "bold purple"
 
 [git_status]
-format = '[\[$all_status$ahead_behind\]](#40E0D0) '
+format = '([\[$all_status$ahead_behind\]]($style) )'
+style = "#40E0D0"
 
-# Disable the package module, hiding it from the prompt completely
-[package]
+# [git_commit]
 # disabled = false
+# # format = '  [$hash$tag]($style) '
+# format = '  ([\($hash $tag\)]($style) )'
+# commit_hash_length = 7
+
+[git_metrics]
+disabled = false
+only_nonzero_diffs = true
+format = '[+$added]($added_style)/[-$deleted]($deleted_style)'
+
+[package]
 format = " [$symbol$version]($style) "
 
 [rust]
-format = " [$symbol$version]($style)"
+format = " [$symbol$version]($style) "
 
 [nodejs]
-format = "via [$symbol($version )]($style)"
+symbol = "📦"
+format = " [$symbol($version )]($style) "
 
-# [directory]
-# format = "[$path](cyan bold italic)[$read_only]($read_only_style)" 
+[cmd_duration]
+min_time = 100
+min_time_to_notify = 1000
+format = "The command took [$duration]($style) "
+style = "yellow bold"
+
+[directory]
+format = "[$path](cyan bold italic)[$read_only]($read_only_style)"
 
 # [sudo]
 # style = "bold green"
