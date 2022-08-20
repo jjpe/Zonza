@@ -149,6 +149,7 @@ def cargo_install [
     --all_features: bool,
     --version: string,
     --git: string,
+    --branch: string,
 ] {
     let options = ([
         (if ($locked) { "--locked" } else { "" })
@@ -156,6 +157,7 @@ def cargo_install [
         (if ($all_features) { "--all-features" } else { "" })
         (if ($version != $nothing) { $"--version=($version)" } else { "" })
         (if ($git != $nothing) { $"--git=($git)" } else { "" })
+        (if ($branch != $nothing) { $"--branch=($branch)" } else { "" })
     ] | each {|opt| $opt | where $opt != "" } | flatten)
     log $"Installing ($cmd) ($options)"
     cargo install $cmd $options
