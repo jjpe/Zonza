@@ -286,7 +286,10 @@ Name=New Terminal
 Exec=/home/($user)/.cargo/bin/alacritty")
     | save --raw "~/.local/share/applications/($desktop_filename)"
 
-    desktop-file-install "~/.local/share/applications/($desktop_filename)" --dir "~/.local/share/applications/"
+    desktop-file-install [
+        "~/.local/share/applications/($desktop_filename)"
+        --dir "~/.local/share/applications/"
+    ]
 }
 
 def configure_zellij [] {
