@@ -2,7 +2,7 @@
 
 CWD="${pwd}"
 NU_VERSION="0.66.2"
-NU_DIR=./nushell
+NU_DIR=/tmp/nushell
 NU_ARCHIVE="nu-${NU_VERSION}-x86_64-unknown-linux-musl.tar.gz"
 BASE_URL="https://github.com/nushell/nushell/releases/download"
 
