@@ -15,6 +15,7 @@ def main [] {
     }
 
     install_bins
+    install_emacs
 
     let marker_path = $"($nu.home-path)/.zonza"
     if ($marker_path | path exists) {
@@ -65,6 +66,21 @@ def install_os_libraries [] {
             libxcb-render0-dev          # for alacritty
             libxcb-shape0-dev           # for alacritty
             libxcb-xfixes0-dev          # for alacritty
+            libgccjit0 # for Emacs native compilation
+            libgccjit-12-dev # for Emacs native compilation
+            autoconf # for compiling Emacs
+            make # for compiling Emacs
+            texinfo # Emacs dependency
+            libgtk-3-dev # Emacs dependency
+            gnutls-dev # Emacs dependency
+            libgif-dev # Emacs dependency
+            libxpm-dev # Emacs dependency
+            libtinfo-dev # Emacs dependency
+            librsvg2-dev # Emacs dependency
+            libxml2-dev # Emacs dependency
+            libsystemd-dev # Emacs dependency
+            libjansson-dev # Emacs dependency
+            libgmp-dev # Emacs dependency
         ]
     } else {
         log "Unsupported OS"
@@ -127,6 +143,46 @@ def install_bins [] {
     cargo_install wasm-pack # essential Rust WASM tooling
     install_lazygit # TUI for git
 }
+
+def install_emacs [] {
+    let bin_dir = $"($nu.home-path)/bin"
+    let emacs_dir = $"($bin_dir)/emacs"
+    mkdir $bin_dir
+    cd $bin_dir
+
+    if (not ($"($emacs_dir)/.git" | path exists)) {
+        rm -rf $"($emacs_dir)"
+        git clone https://github.com/emacs-mirror/emacs.git $"($emacs_dir)"
+    } else {
+        log "Found existing emacs directory"
+    }
+    cd $"($emacs_dir)"
+    git pull origin master
+    ./autogen.sh
+    let-env CFLAGS = (
+        "-I/usr/lib/gcc/x86_64-linux-gnu/12/include -L/usr/lib/gcc/x86_64-linux-gnu/12"
+    )
+    ./configure [
+        --with-native-compilation
+        --with-rsvg
+        --with-png
+        --with-jpeg
+        --with-gif
+        --with-gtk
+        --with-dbud
+        --with-modules
+        --without-pop
+    ];
+    make -j 12
+    sudo make install;
+    if ("~/.emacs.d/.git" | path exists) {
+        log "Found existing Prelude config"
+    } else {
+        log "Installing Prelude"
+        curl -L https://git.io/epre | sh
+    }
+}
+
 
 # Check that the Rust toolchain is installed
 def is_rust_installed? [] {
