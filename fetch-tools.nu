@@ -255,7 +255,38 @@ def configure_nushell [] {
 
 def configure_alacritty [] {
     log "Configuring alacritty"
-    cp -r ./defaults/alacritty ~/.config/alacritty
+    let user = ($"$env.USER")
+    let alacritty_dir = "/home/($user)/.config/alacritty"
+    cp -r ./defaults/alacritty $"($alacritty_dir)"
+
+    let version = "0.10.1"
+    let base_url = ("https://github.com/alacritty/alacritty/releases/download")
+    let svg_filename = "Alacritty.svg"
+    fetch --raw $"($base_url)/v($version)/($svg_filename)"
+    | save --raw $"($alacritty_dir)/($svg_filename)";
+
+    # TODO: .desktop files are only for Linux systems, not MacOS or Windows.
+    let desktop_filename = "Alacritty.desktop"
+    ($"[Desktop Entry]
+Type=Application
+TryExec=alacritty
+Exec=/home/($user)/.cargo/bin/alacritty
+Icon=($alacritty_dir)/($svg_filename)
+Terminal=false
+Categories=System;TerminalEmulator;
+
+Name=Alacritty
+GenericName=Terminal
+Comment=A fast, cross-platform, OpenGL terminal emulator
+StartupWMClass=Alacritty
+Actions=New;
+
+[Desktop Action New]
+Name=New Terminal
+Exec=/home/($user)/.cargo/bin/alacritty")
+    | save --raw "~/.local/share/applications/($desktop_filename)"
+
+    desktop-file-install "~/.local/share/applications/($desktop_filename)" --dir "~/.local/share/applications/"
 }
 
 def configure_zellij [] {
