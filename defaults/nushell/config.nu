@@ -503,3 +503,47 @@ let-env config = {
     }
   ]
 }
+
+# Some utility commands
+
+# This command scans `$root_dir` for Cargo.toml files.
+# Then it runs `cargo clean` in every matching directory.
+def cargo-clean-dev-projects [--root-dir: string = "~/dev"] {
+    fd --type f Cargo.toml $"($root_dir)"
+    | split row "\n"
+    | path dirname
+    | par-each {|dir| echo $"Cleaning ($dir)"; cd $dir; cargo clean}
+}
+
+# Prepend a path to `$env.PATH`, then uniquify the result
+def prepend-to-path [p: path] {
+    if ($p in $env.PATH) {
+        $env.PATH | uniq
+    } else {
+        $env.PATH | prepend $p | uniq
+    }
+}
+
+# Configure starship
+source ~/.cache/starship/init.nu
+
+# Configure zoxide & fzf
+source ~/.zoxide.nu
+let-env PATH = (prepend-to-path ~/dev/fzf/bin)
+
+# Configure fnm, the Fast NodeJS Manager
+let-env PATH = ($env.PATH | prepend "/run/user/1000/fnm_multishells/165765_1661254847527/bin")
+let-env FNM_MULTISHELL_PATH = "/run/user/1000/fnm_multishells/165765_1661254847527"
+let-env FNM_VERSION_FILE_STRATEGY = "local"
+let-env FNM_DIR = "/home/j/.local/share/fnm"
+let-env FNM_LOGLEVEL = "info"
+let-env FNM_NODE_DIST_MIRROR = "https://nodejs.org/dist"
+let-env FNM_ARCH = "x64"
+let-env config = ($env.config | upsert hooks.env_change.PWD {
+    [
+        {
+            condition: {|_, after| (($after | path join .node-version | path exists) || ($after | path join .nvmrc | path exists)) }
+            code: "fnm use --silent-if-unchanged"
+        }
+    ]
+})

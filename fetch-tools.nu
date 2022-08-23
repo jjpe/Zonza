@@ -22,18 +22,14 @@ def main [] {
         log "Updated the ZO.N.Z.A. stack"
     } else {
         log "Configuring the ZO.N.Z.A. stack components..."
-
         configure_nushell
         configure_alacritty
         configure_zellij
         configure_starship
-        configure_zoxide
-        configure_fzf
+        # configure_zoxide
+        # configure_fzf
         configure_fnm
-
-        add_env_entry "let-env PATH = ($env.PATH | uniq)"
     }
-
     touch $marker_path
 }
 
@@ -149,7 +145,6 @@ def install_emacs [] {
     let emacs_dir = $"($bin_dir)/emacs"
     mkdir $bin_dir
     cd $bin_dir
-
     if (not ($"($emacs_dir)/.git" | path exists)) {
         rm -rf $"($emacs_dir)"
         git clone https://github.com/emacs-mirror/emacs.git $"($emacs_dir)"
@@ -182,7 +177,6 @@ def install_emacs [] {
         curl -L https://git.io/epre | sh
     }
 }
-
 
 # Check that the Rust toolchain is installed
 def is_rust_installed? [] {
@@ -253,9 +247,10 @@ def install_fzf [] {
     }
 }
 
-def configure_zellij [] {
-    log "Configuring zellij"
-    cp -r ./defaults/zellij ~/.config/zellij
+def configure_nushell [] {
+    log "Configuring nushell"
+    cp -r ./defaults/nushell/config.nu ~/.config/nushell/config.nu
+    cp -r ./defaults/nushell/env.nu    ~/.config/nushell/env.nu
 }
 
 def configure_alacritty [] {
@@ -263,63 +258,29 @@ def configure_alacritty [] {
     cp -r ./defaults/alacritty ~/.config/alacritty
 }
 
-def configure_nushell [] {
-    log "Configuring nushell"
-    cp -r ./defaults/nushell ~/.config/nushell
-
-    # Custom commands:
-    add_config_entry ("
-def cargo_clean_dev_projects [] {
-    fd --type f Cargo.toml ~/dev
-    | split row \"\\n\"
-    | path dirname
-    | par-each {|dir| echo $\"Cleaning ($dir)\"; cd $dir; cargo clean}
-}" | str trim)
-
+def configure_zellij [] {
+    log "Configuring zellij"
+    cp -r ./defaults/zellij ~/.config/zellij
 }
 
 def configure_starship [] {
-    add_env_entry ("mkdir ~/.cache/starship")
-    add_env_entry ("starship init nu | save ~/.cache/starship/init.nu")
-    add_config_entry ("source ~/.cache/starship/init.nu")
+    log "Configuring starship"
     cp ./defaults/starship/starship.toml ~/.config/starship.toml
 }
 
-def configure_zoxide [] {
-    log "Configuring zoxide"
-    add_env_entry (
-        "zoxide init nushell --hook prompt | save ~/.zoxide.nu"
-    )
-    add_config_entry "source ~/.zoxide.nu"
-}
+# def configure_zoxide [] {
+#     # log "Configuring zoxide"
+# }
 
-def configure_fzf [] {
-    log "Configuring fzf"
-    # TODO: ask user where FZF is installed
-    let fzf_path = "~/dev/fzf/bin"
-    add_config_entry ($"let-env PATH = \(prepend_to_path ($fzf_path))")
-    add_config_entry ("
-def prepend_to_path [p: path] {
-    if ($p in $env.PATH) {
-        $env.PATH | uniq
-    } else {
-        $env.PATH | prepend $p | uniq
-    }
-}" | str trim)
-}
+# def configure_fzf [] {
+#     # log "Configuring fzf"
+#     # TODO: ask user where FZF is installed
+# }
 
 def configure_fnm [] {
     log "Configuring fnm"
-    add_config_entry "# Configure for fnm, the Fast NodeJS Manager"
-    fnm env --shell=nushell --use-on-cd | save --append ($nu.config-path)
-}
-
-def add_env_entry [...msg: string] {
-    $msg | prepend '' | save --append ($nu.env-path)
-}
-
-def add_config_entry [...msg: string] {
-    $msg | prepend '' | save --append ($nu.config-path)
+    # TODO: re-enable autoconfigure based on fnm iteself
+    # fnm env --shell=nushell --use-on-cd | save --append ($nu.config-path)
 }
 
 def log [...msgs: string] {
