@@ -77,6 +77,7 @@ def install_os_libraries [] {
             libsystemd-dev # Emacs dependency
             libjansson-dev # Emacs dependency
             libgmp-dev # Emacs dependency
+            kde-plasma-desktop # Gnome3 still sucks in 2022
         ]
     } else {
         log "Unsupported OS"
