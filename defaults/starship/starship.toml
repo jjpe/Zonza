@@ -54,6 +54,7 @@ symbol = "📦"
 format = " [$symbol($version )]($style) "
 
 [cmd_duration]
+show_milliseconds = true
 min_time = 100
 min_time_to_notify = 1000
 format = "The command took [$duration]($style) "
