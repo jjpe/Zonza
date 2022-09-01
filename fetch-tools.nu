@@ -274,8 +274,8 @@ def configure_nushell [] {
 
 def configure_alacritty [] {
     log "Configuring alacritty"
-    let user = ($"$env.USER")
-    let alacritty_dir = "/home/($user)/.config/alacritty"
+    let user = $"$env.USER"
+    let alacritty_dir = $"~/.config/alacritty"
     cp -r ./defaults/alacritty $"($alacritty_dir)"
 
     let version = "0.10.1"
@@ -303,10 +303,10 @@ Actions=New;
 [Desktop Action New]
 Name=New Terminal
 Exec=/home/($user)/.cargo/bin/alacritty")
-    | save --raw "~/.local/share/applications/($desktop_filename)"
+    | save --raw $"~/.local/share/applications/($desktop_filename)"
 
     desktop-file-install [
-        "~/.local/share/applications/($desktop_filename)"
+        $"~/.local/share/applications/($desktop_filename)"
         --dir "~/.local/share/applications/"
     ]
 }
