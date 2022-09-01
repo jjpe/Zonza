@@ -94,6 +94,7 @@ def install_os_libraries [] {
             libgmp-dev # Emacs dependency
             kde-plasma-desktop # Gnome3 still sucks in 2022
             plasma-nm # network-manager applet for KDE Plasma
+            lm-sensors # Use the Sense, Harry! :p
             chromium-browser # Firefox doesn't work everywhere anymore
         ]
     } else {
