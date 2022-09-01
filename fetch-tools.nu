@@ -3,6 +3,7 @@
 def main [] {
     install_os_libraries
     install_powerline_fonts
+    setup_multitouch
 
     # Install Rust if not present
     if (is_rust_installed?) {
@@ -46,6 +47,20 @@ def install_rust_analyzer [date: string] {
 
     chmod +x $"($tmp_dir)/($binfile)"
     mv $"($tmp_dir)/($binfile)" ~/bin/rust-analyzer
+}
+
+def setup_multitouch [] {
+    # Install touchegg (assumes Ubuntu):
+    sudo add-apt-repository ppa:touchegg/stable
+    sudo apt update
+    sudo apt install touchegg
+
+    let tmp_dir = "/tmp/toucheggKDE"
+    git clone https://github.com/NayamAmarshe/ToucheggKDE.git $tmp_dir
+
+    cd $tmp_dir
+    mkdir ~/.config/touchegg
+    cp touch* ~/.config/touchegg/
 }
 
 def install_os_libraries [] {
