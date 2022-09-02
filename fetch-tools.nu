@@ -275,10 +275,9 @@ def configure_nushell [] {
 def configure_alacritty [] {
     log "Configuring alacritty"
 
-    let alacritty_dir = ~/.config/alacritty
-    mkdir $"($alacritty_dir)"
-    cp "./defaults/alacritty/alacritty.yml" $"($alacritty_dir)/alacritty.yml"
-    cp "./defaults/alacritty/Alacritty.svg" $"($alacritty_dir)/Alacritty.svg"
+    mkdir ~/.config/alacritty
+    cp "./defaults/alacritty/alacritty.yml" "~/.config/alacritty/alacritty.yml"
+    cp "./defaults/alacritty/Alacritty.svg" "~/.config/alacritty/Alacritty.svg"
 
     # TODO: .desktop files are only for Linux systems, not MacOS or Windows.
     # Generate .desktop file
