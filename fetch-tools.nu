@@ -313,8 +313,8 @@ def configure_starship [] {
 
 def configure_fnm [] {
     log "Configuring fnm"
-    # TODO: re-enable autoconfigure based on fnm iteself
-    # fnm env --shell=nushell --use-on-cd | save --append ($nu.config-path)
+    mkdir ~/.config/fnm/
+    fnm env --shell=nushell --use-on-cd | save ~/.config/fnm/fnm_env.nu
 }
 
 def log [...msgs: string] {
