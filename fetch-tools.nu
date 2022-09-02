@@ -244,8 +244,8 @@ def install_lazygit [] {
     log "Installing lazygit"
     fetch --raw $"($base_url)/v($version)/($filename)"
     | save --raw $"($tmp_dir)/($filename)"
-    tar -xf $"($tmp_dir)/($filename)" -C $tmp_dir
-    cp /tmp/lazygit/lazygit $bin_dir
+    tar -xf $"($tmp_dir)/($filename)" -C $"($tmp_dir)"
+    cp /tmp/lazygit/lazygit $"($bin_dir)"
 }
 
 def install_fzf [] {
