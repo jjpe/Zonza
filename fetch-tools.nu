@@ -268,8 +268,8 @@ def install_fzf [] {
 
 def configure_nushell [] {
     log "Configuring nushell"
-    cp -r ./defaults/nushell/config.nu ~/.config/nushell/config.nu
-    cp -r ./defaults/nushell/env.nu    ~/.config/nushell/env.nu
+    cp ./defaults/nushell/config.nu ~/.config/nushell/config.nu
+    cp ./defaults/nushell/env.nu    ~/.config/nushell/env.nu
 }
 
 def configure_alacritty [] {
@@ -293,7 +293,8 @@ def configure_alacritty [] {
 
 def configure_zellij [] {
     log "Configuring zellij"
-    cp -r ./defaults/zellij ~/.config/zellij
+    cp ./defaults/zellij/config.yaml ~/.config/zellij/config.yaml
+    cp ./defaults/zellij/layout.yaml ~/.config/zellij/layout.yaml
 }
 
 def configure_starship [] {

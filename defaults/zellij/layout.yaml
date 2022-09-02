@@ -27,7 +27,19 @@ tabs:
     run:
       command: {cmd: btm, args: ["--regex", "--color", "nord"]}
   - direction: Vertical
+    name: "lazygit"
+    run:
+      command: {cmd: lazygit, args: []}
+  - direction: Vertical
     name: "****" # General Tab (as in 4 stars :p)
     focus: true
     run:
       command: {cmd: nu, args: ["-e", "cd ~/"]}
+  # - direction: Vertical
+  #   name: "zonza"
+  #   run:
+  #     command: {cmd: nu, args: ["-e", "cd ~/dev/zonza"]}
+  # - direction: Vertical
+  #   name: "lark"
+  #   run:
+  #     command: {cmd: nu, args: ["-e", "cd ~/dev/lark/lark-parser"]}
